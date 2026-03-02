@@ -1,24 +1,38 @@
-import express from 'express'; 
-import cors from 'cors'; 
-import dotenv from 'dotenv'; 
-import helmet from 'helmet'
-import routesNodemailer from './routes.nodemailer.js'
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+import helmet from "helmet";
+import routesNodemailer from "./routes.nodemailer.js";
+
+import nodemailer from "nodemailer";
+import mg from "nodemailer-mailgun-transport";
+
+const auth = {
+  auth: {
+    api_key: process.env.MAILGUN_API_KEY,
+    domain: process.env.MAILGUN_DOMAIN,
+  },
+};
+
+const transporter = nodemailer.createTransport(mg(auth));
 
 const app = express();
 
-app.set("trust proxy", 1)
+app.set("trust proxy", 1);
 
-app.use(cors({
-    origin:["https://portfolio-lhermitteophelie.vercel.app"],
+app.use(
+  cors({
+    origin: ["https://portfolio-lhermitteophelie.vercel.app"],
     credentials: true,
-    methods:["GET","POST"]
-})); 
-app.use(helmet())
+    methods: ["GET", "POST"],
+  }),
+);
+app.use(helmet());
 app.use(express.json());
 
 dotenv.config();
 
-app.use('/api', routesNodemailer)
+app.use("/api", routesNodemailer);
 
 app.listen(process.env.PORT || 5000, () => {
   console.log("Server running");
@@ -33,7 +47,7 @@ app.get("/api/test-mail", async (req, res) => {
       text: "Hello world",
     });
 
-    console.log(info);
+    console.log("Mail envoyé:", info);
     res.status(200).json({ success: true });
   } catch (error) {
     console.error("Erreur test mail:", error);
