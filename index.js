@@ -7,7 +7,7 @@ import routesNodemailer from './routes.nodemailer.js'
 const app = express();
 
 app.use(cors({
-    origin:["https://portfolio-lhermitteophelie.vercel.app", "http://localhost:5173"],
+    origin:["https://portfolio-lhermitteophelie.vercel.app"],
     credentials: true,
     methods:["GET","POST"]
 })); 
