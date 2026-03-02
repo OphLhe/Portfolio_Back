@@ -1,8 +1,5 @@
-import dotenv from "dotenv";
 import rateLimit from "express-rate-limit";
 import { sendEmail } from "./config.nodemailer.js";
-
-dotenv.config();
 
 export const contactLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -31,7 +28,7 @@ export const sendingEmail = async (req, res) => {
       return res.status(400).json({ error: "Email invalide." });
     }
     
-    await sendEmail({  honeypot, firstName, lastName, email, message });
+    await sendEmail({ firstName, lastName, email, message });
     return res.status(200).json({ success: true });
 
   } catch (error) {
