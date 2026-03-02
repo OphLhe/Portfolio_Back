@@ -18,6 +18,8 @@ dotenv.config();
 
 app.use('/api', routesNodemailer)
 
-app.listen(process.env.PORT);
+app.listen(process.env.PORT || 5000, () => {
+  console.log("Server running");
+});
 
 export default app;
