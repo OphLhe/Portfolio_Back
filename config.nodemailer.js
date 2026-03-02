@@ -1,25 +1,19 @@
 import nodemailer from "nodemailer";
 
-export const sendEmail = async ({
-  firstName,
-  lastName,
-  email,
-  message,
-}) => {
+export const sendEmail = async ({ firstName, lastName, email, message }) => {
   try {
-    const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: process.env.SMTP_PORT || 587,
-      secure:false,
+    const mailgunAuth = {
       auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
+        api_key: process.env.MAILGUN_API_KEY,
+        domain: process.env.MAILGUN_DOMAIN,
       },
-    });
+    };
+
+    const transporter = nodemailer.createTransport(mg(mailgunAuth));
 
     const mailOptions = {
-      from: `"${firstName} ${lastName}(via Portfolio)" <${process.env.SMTP_USER}>`,
-      to: process.env.SMTP_USER,
+      from: `"${firstName} ${lastName}(via Portfolio)" <${process.env.MAILGUN_FROM}>`,
+      to: process.env.MAILGUN_TO,
       subject: `Nouveau message depuis le Portflio de : ${firstName} ${lastName} (${email})`,
       text: `
     Nom : ${firstName} ${lastName}
@@ -30,13 +24,15 @@ export const sendEmail = async ({
     <p><strong>Email :</strong> ${email}</p>
     <p><strong>Message :</strong></p>
     <p>${message}</p>`,
+      replyTo: email,
     };
 
     const info = await transporter.sendMail(mailOptions);
     console.log("Message envoyé : %s", info.messageId);
+    res.status(200).json({ success: true });
   } catch (error) {
     console.error("Erreur lors de l'envoi de l'email :", error);
-    throw error;
+    res.status(500).json({ error: "Erreur serveur, réessayez plus tard." });
   }
 };
 
