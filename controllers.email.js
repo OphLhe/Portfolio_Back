@@ -6,7 +6,7 @@ dotenv.config();
 
 export const contactLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 10,
+  max: 5,
   message: { error: "Trop de tentatives, réessayez plus tard." },
 });
 
@@ -32,7 +32,6 @@ export const sendingEmail = async (req, res) => {
     }
 
     await sendEmail({  honeypot, firstName, lastName, email, message });
-    console.log("succés")
     return res.status(200).json({ success: true });
 
   } catch (error) {

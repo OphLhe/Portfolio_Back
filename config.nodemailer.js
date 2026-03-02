@@ -8,9 +8,6 @@ export const sendEmail = async ({
 }) => {
   try {
     const transporter = nodemailer.createTransport({
-      tls: {
-        rejectUnauthorized: false, // ⚠️ Désactive la vérification SSL/TLS
-      },
       service: "gmail",
       auth: {
         user: process.env.SMTP_USER,
