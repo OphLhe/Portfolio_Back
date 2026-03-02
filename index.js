@@ -24,4 +24,21 @@ app.listen(process.env.PORT || 5000, () => {
   console.log("Server running");
 });
 
+app.get("/api/test-mail", async (req, res) => {
+  try {
+    const info = await transporter.sendMail({
+      from: `postmaster@${process.env.MAILGUN_DOMAIN}`,
+      to: "ophelie.lhermitte@gmail.com",
+      subject: "Test Mailgun",
+      text: "Hello world",
+    });
+
+    console.log(info);
+    res.status(200).json({ success: true });
+  } catch (error) {
+    console.error("Erreur test mail:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 export default app;
