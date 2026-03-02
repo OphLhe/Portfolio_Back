@@ -19,17 +19,10 @@ export const sendingEmail = async (req, res) => {
     }
 
     if (!firstName || !lastName || !email || !message) {
-      return res
-        .status(400)
-        .json({ error: "Tous les champs sont obligatoires." });
+      return res.status(400).json({ error: "Tous les champs sont obligatoires." });
     }
 
-    if (
-      firstName.length > 50 ||
-      lastName.length > 100 ||
-      email.length > 320 ||
-      message.length > 2000
-    ) {
+    if (firstName.length > 50 || lastName.length > 100 || email.length > 320 || message.length > 2000) {
       return res.status(400).json({ error: "Entrées trop longues." });
     }
 
@@ -37,19 +30,12 @@ export const sendingEmail = async (req, res) => {
     if (!emailRegex.test(email)) {
       return res.status(400).json({ error: "Email invalide." });
     }
+    
+    await sendEmail({  honeypot, firstName, lastName, email, message });
+    return res.status(200).json({ success: true });
 
-    try {
-      await sendEmail({ firstName, lastName, email, message });
-      console.log("Email envoyé avec succès");
-    } catch (err) {
-      console.error("Erreur en envoyant l'email :", err);
-      // ⚠️ On continue pour renvoyer une réponse
-    }
-     return res.status(200).json({ success: true });
   } catch (error) {
     console.error(error);
-    return res
-      .status(500)
-      .json({ error: "Erreur serveur, réessayez plus tard." });
+    return res.status(500).json({ error: "Erreur serveur, réessayez plus tard." });
   }
 };
