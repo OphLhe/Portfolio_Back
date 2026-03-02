@@ -6,7 +6,7 @@ import routesNodemailer from './routes.nodemailer.js'
 
 const app = express();
 
-app.use(cors()); 
+app.use(cors({origin:true})); 
 app.use(helmet())
 app.use(express.json());
 
